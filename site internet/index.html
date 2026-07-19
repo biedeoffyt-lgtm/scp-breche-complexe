@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SCP : Brèche de Complexe | Site-19</title>
+  <meta name="description" content="Plongez dans le Site-19. SCP : Brèche de Complexe — Le jeu Roblox immersif basé sur la Fondation SCP." />
+  <link rel="icon" type="image/png" href="img/logo-scp.png" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/ui-game.css" />
+  <link rel="stylesheet" href="css/enhancements.css" />
+  <link rel="stylesheet" href="css/epic.css" />
+  <link rel="stylesheet" href="css/final.css" />
+  <link rel="stylesheet" href="css/creative.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- ÉCRAN DE CHARGEMENT -->
+  <div id="loading-screen">
+    <img src="img/logo-scp.png" class="load-logo" alt="SCP" />
+    <div class="load-title">SCP : Brèche de Complexe</div>
+    <div class="load-bar-wrap"><div class="load-bar" id="loadBar"></div></div>
+    <div class="load-status" id="loadStatus">Initialisation des systèmes...</div>
+  </div>
+
+  <div class="scanlines"></div>
+  <div class="scan-line"></div>
+  <div id="particles-container"></div>
+  <canvas id="network-canvas"></canvas>
+  <div id="scroll-progress"></div>
+
+  <!-- EASTER EGG KONAMI -->
+  <div class="konami-overlay" id="konamiOverlay">
+    <img src="img/logo-scp.png" class="konami-logo" alt="SCP" />
+    <div class="konami-text">
+      ACCÈS NIVEAU O5 ACCORDÉ<br/>
+      ██████████████████████<br/>
+      VOUS AVEZ TROUVÉ LE DOSSIER CLASSIFIÉ<br/>
+      LE SITE-19 VOUS OBSERVE<br/>
+      ██████████████████████<br/>
+      SCP : BRÈCHE DE COMPLEXE — BIENTÔT
+    </div>
+    <button class="konami-close" onclick="document.getElementById('konamiOverlay').classList.remove('active')">
+      [ FERMER LE DOSSIER ]
+    </button>
+  </div>
+
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <a href="index.html" style="text-decoration:none;display:flex;align-items:center;gap:0.6rem">
+        <img src="img/logo-scp.png" alt="SCP:BC" style="height:28px;width:28px;object-fit:contain;opacity:0.85;" />
+        <span style="font-family:'Share Tech Mono',monospace;font-size:0.78rem;letter-spacing:4px;color:var(--white)">SCP-BC</span>
+      </a>
+    </div>
+    <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#hero">Accueil</a></li>
+      <li><a href="#story">Histoire</a></li>
+      <li><a href="#factions">Factions</a></li>
+      <li><a href="#scps">SCPs</a></li>
+      <li><a href="#features">Fonctionnalités</a></li>
+      <li><a href="#stats">Stats</a></li>
+      <li><a href="#faq">FAQ</a></li>
+      <li><a href="roles.html">Rôles</a></li>
+      <li><a href="personnel.html">Équipe</a></li>
+      <li><a href="reglement.html">Règlement</a></li>
+      <li><a href="https://www.roblox.com" target="_blank" class="nav-cta">JOUER</a></li>
+    </ul>
+  </nav>
+
+  <section id="hero" class="hero">
+    <div class="hero-bg">
+      <!-- SLIDES CARROUSEL -->
+      <div class="hero-slide active" id="slide-0" style="background-image:url('img/screenshot2.png')"></div>
+      <div class="hero-slide" id="slide-1" style="background-image:url('img/screenshot1.png')"></div>
+      <div class="hero-slide" id="slide-2" style="background-image:url('img/screenshot3.png')"></div>
+      <div class="hero-video-overlay"></div>
+      <div class="hero-grid"></div>
+      <div class="alert-flicker"></div>
+      <div class="hero-layer hero-layer-1"></div>
+      <div class="hero-layer hero-layer-2"></div>
+      <div class="hero-crt-vignette"></div>
+      <div class="ambient-light" style="width:500px;height:500px;top:-100px;left:-100px;background:rgba(100,120,160,1);--dur:15s;--delay:0s;--peak:0.06;--tx:40px;--ty:30px"></div>
+      <div class="ambient-light" style="width:400px;height:400px;bottom:-80px;right:-80px;background:rgba(140,110,160,1);--dur:18s;--delay:3s;--peak:0.04;--tx:-30px;--ty:-20px"></div>
+      <div class="ambient-light" style="width:300px;height:300px;top:40%;left:50%;background:rgba(100,140,180,1);--dur:22s;--delay:7s;--peak:0.03;--tx:20px;--ty:40px"></div>
+    </div>
+
+    <!-- COMPTEUR SLIDE -->
+    <div class="carousel-counter">
+      <span class="current" id="carouselCurrent">01</span>
+      <span> / 03</span>
+    </div>
+    <!-- LABEL -->
+    <div class="carousel-label" id="carouselLabel">ZONE LOGISTIQUE — SITE-19</div>
+    <div class="hero-hud hud-tl"><span>SITE-19 // SECTOR-A</span><br/><span class="blink-text">⬤ BREACH ACTIVE</span></div>
+    <div class="hero-hud hud-tr"><span>CAM-01 // LIVE</span><br/><span class="text-red">⚠ CONTAINMENT FAIL</span></div>
+    <div class="hero-hud hud-bl"><span>O5-CLEARANCE REQUIRED</span></div>
+    <div class="hero-hud hud-br"><span id="hero-clock">00:00:00</span></div>
+    <!-- OVERLAY CAMÉRA -->
+    <div class="cam-overlay">
+      <div class="cam-corner tl"></div>
+      <div class="cam-corner tr"></div>
+      <div class="cam-corner bl"></div>
+      <div class="cam-corner br"></div>
+      <div class="cam-rec"><div class="cam-rec-dot"></div>REC</div>
+    </div>
+    <!-- SIGNAL LOST -->
+    <div class="signal-lost" id="signalLost">
+      <div class="signal-lost-bar" style="top:15%;height:8px"></div>
+      <div class="signal-lost-bar" style="top:42%;height:3px"></div>
+      <div class="signal-lost-bar" style="top:67%;height:12px"></div>
+      <div class="signal-lost-bar" style="top:88%;height:5px"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-badge"><span>⚠ ALERTE GÉNÉRALE — BRÈCHE DE CONFINEMENT</span></div>
+      <h1 class="hero-title glitch-text" data-text="SCP : Brèche de Complexe">SCP : Brèche de Complexe</h1>
+      <p class="hero-subtitle typewriter" id="heroSubtitle"></p>
+      <div class="hero-buttons">
+        <a href="https://www.roblox.com" target="_blank" class="btn btn-primary"><i class="fas fa-gamepad"></i> Jouer sur Roblox</a>
+        <a href="https://discord.gg/hYn84gwkFt" target="_blank" class="btn btn-secondary"><i class="fab fa-discord"></i> Rejoindre Discord</a>
+      </div>
+      <div class="hero-release"><i class="fas fa-clock"></i> Sortie prévue : <strong>Fin 2026 / Début 2027</strong></div>
+    </div>
+    <!-- INDICATEURS -->
+    <div class="carousel-indicators" id="carouselIndicators">
+      <div class="carousel-dot active" onclick="goToSlide(0)"></div>
+      <div class="carousel-dot" onclick="goToSlide(1)"></div>
+      <div class="carousel-dot" onclick="goToSlide(2)"></div>
+    </div>
+    <div class="hero-scroll-indicator"><div class="scroll-line"></div><span>SCROLL</span></div>
+    <div class="hero-divider"></div>
+    <!-- TICKER ALERTE -->
+    <div class="alert-ticker">
+      <span class="alert-ticker-label">⬤ LIVE</span>
+      <div class="alert-ticker-track">
+        <span>BRÈCHE DE CONFINEMENT ACTIVE — SITE-19</span>
+        <span class="warn">⚠ SCP-079 A OBTENU L'ACCÈS AUX SYSTÈMES</span>
+        <span>TOUTES LES CELLULES DÉVERROUILLÉES</span>
+        <span class="warn">⚠ ALARME NIVEAU KETER DÉCLENCHÉE</span>
+        <span>FORCES D'INTERVENTION MOBILE EN ROUTE</span>
+        <span class="warn">⚠ GROUPES D'INTÉRÊTS DÉTECTÉS DANS LE COMPLEXE</span>
+        <span>SORTIE PRÉVUE : FIN 2026 / DÉBUT 2027</span>
+        <span>REJOIGNEZ LE DISCORD : discord.gg/hYn84gwkFt</span>
+        <!-- Repeat for seamless loop -->
+        <span>BRÈCHE DE CONFINEMENT ACTIVE — SITE-19</span>
+        <span class="warn">⚠ SCP-079 A OBTENU L'ACCÈS AUX SYSTÈMES</span>
+        <span>TOUTES LES CELLULES DÉVERROUILLÉES</span>
+        <span class="warn">⚠ ALARME NIVEAU KETER DÉCLENCHÉE</span>
+        <span>FORCES D'INTERVENTION MOBILE EN ROUTE</span>
+        <span class="warn">⚠ GROUPES D'INTÉRÊTS DÉTECTÉS DANS LE COMPLEXE</span>
+        <span>SORTIE PRÉVUE : FIN 2026 / DÉBUT 2027</span>
+        <span>REJOIGNEZ LE DISCORD : discord.gg/hYn84gwkFt</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- STATUT DÉVELOPPEMENT -->
+  <div class="devstatus-section">
+    <div class="devstatus-card reveal">
+      <div>
+        <span class="devstatus-tag">STATUT DU PROJET</span>
+        <div class="devstatus-title">En développement actif — L-Project Studio</div>
+        <div class="devstatus-phases">
+          <span class="phase done">✓ Concept</span>
+          <span class="phase done">✓ Prototype</span>
+          <span class="phase done">✓ Carte</span>
+          <span class="phase active">⬤ Gameplay</span>
+          <span class="phase pending">○ Bêta</span>
+          <span class="phase pending">○ Sortie</span>
+        </div>
+        <div class="dev-progress-wrap">
+          <div class="dev-progress-bar" id="devProgressBar" style="width:0%"></div>
+        </div>
+      </div>
+      <div>
+        <div class="dev-percent" id="devPercent">0%</div>
+        <div class="dev-percent-label">AVANCEMENT</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider" style="margin-top:2rem"></div>
+
+  <!-- BANDE DE DONNÉES -->
+  <div class="data-band">
+    <div class="data-band-inner" id="dataBand"></div>
+  </div>
+
+  <!-- COUNTDOWN SORTIE -->
+  <div class="breach-timer-section">
+    <div class="breach-timer-bg"></div>
+    <span class="breach-timer-label">SORTIE DU JEU ESTIMÉE DANS</span>
+    <div class="countdown-grid">
+      <div class="countdown-block"><span class="countdown-num" id="cd-days">--</span><span class="countdown-label">JOURS</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block"><span class="countdown-num" id="cd-hours">--</span><span class="countdown-label">HEURES</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block"><span class="countdown-num" id="cd-min">--</span><span class="countdown-label">MINUTES</span></div>
+      <div class="countdown-sep">:</div>
+      <div class="countdown-block"><span class="countdown-num" id="cd-sec">--</span><span class="countdown-label">SECONDES</span></div>
+    </div>
+    <span class="breach-timer-sub">DATE CIBLE : 01 JANVIER 2027 — SUJET À MODIFICATION</span>
+  </div>
+
+  <!-- BANDE DE DONNÉES -->
+  <div class="data-band">
+    <div class="data-band-inner" id="dataBand2"></div>
+  </div>
+
+  <section id="story" class="section story-section">
+    <div class="section-header reveal">
+      <span class="section-tag">DOSSIER CLASSIFIÉ</span>
+      <h2 class="section-title glitch-text" data-text="La Chute du Site-19">La Chute du Site-19</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="story-content reveal">
+      <div class="story-text">
+        <p>Le <strong>Site-19</strong> contenait des centaines d'anomalies des classes Sûr, Euclide et Keter.</p>
+        <p>Un jour, <strong class="text-red">SCP-079</strong> réussit à contourner les protocoles de sécurité et obtient l'accès complet aux systèmes du complexe.</p>
+        <p>Toutes les cellules de confinement sont ouvertes. Une <strong class="text-red">brèche générale</strong> de confinement est déclarée.</p>
+        <p>Profitant du chaos, plusieurs <strong>groupes d'intérêts</strong> envahissent l'installation.</p>
+        <p>Les <strong>Forces d'Intervention Mobile</strong> sont mobilisées. Le destin du Site-19 repose désormais entre les mains des joueurs.</p>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content"><span class="timeline-time">T-00:00</span><h4>SCP-079 s'éveille</h4><p>Accès total aux systèmes du Site-19 obtenu.</p></div>
+        </div>
+        <div class="timeline-item reveal-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content"><span class="timeline-time">T+00:04</span><h4>Portes ouvertes</h4><p>Toutes les cellules de confinement sont déverrouillées.</p></div>
+        </div>
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot red"></div>
+          <div class="timeline-content"><span class="timeline-time text-red">T+00:07</span><h4>Brèche Générale</h4><p>Alarme de niveau Keter déclenchée sur tout le site.</p></div>
+        </div>
+        <div class="timeline-item reveal-right">
+          <div class="timeline-dot"></div>
+          <div class="timeline-content"><span class="timeline-time">T+00:12</span><h4>Invasion des Groupes d'Intérêts</h4><p>Le Chaos Insurgency et d'autres factions infiltrent le complexe.</p></div>
+        </div>
+        <div class="timeline-item reveal-left">
+          <div class="timeline-dot gold"></div>
+          <div class="timeline-content"><span class="timeline-time">T+00:15</span><h4>Déploiement MTF</h4><p>Les Forces d'Intervention Mobile sont lancées. La bataille commence.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="factions" class="section factions-section">
+    <div class="section-header reveal">
+      <span class="section-tag">ACTEURS DU CONFLIT</span>
+      <h2 class="section-title">Factions</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="factions-grid">
+      <div class="faction-card reveal" data-faction="foundation">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="faction-tag">FONDATION</div>
+          <h3>Fondation SCP</h3>
+          <p>Maintenir le confinement. Éliminer les menaces. Reprendre le contrôle du Site.</p>
+          <div class="faction-motto">"Sécuriser. Contenir. Protéger."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Gendastrerie Nationale</span>
+            <span class="rel enemy">✖ Ennemis : Chaos, GRU, MC&amp;D, SCPs</span>
+          </div>
+          <div class="faction-roles-toggle" onclick="toggleRoles(this)"><span>Voir les grades <i class="fas fa-chevron-down"></i></span></div>
+          <div class="faction-roles hidden">
+            <div class="role-group"><span class="role-label">Direction</span><span class="role">Directeur du Site</span><span class="role">Conseil O5</span><span class="role">Comité d'Éthique</span></div>
+            <div class="role-group"><span class="role-label">Sécurité</span><span class="role">Directeur de la Sécurité</span><span class="role">Commandant</span><span class="role">Lieutenant</span><span class="role">Agent d'Intervention Tactique</span><span class="role">Garde</span></div>
+            <div class="role-group"><span class="role-label">Science</span><span class="role">Directeur des Recherches</span><span class="role">Chercheur en Chef</span><span class="role">Scientifique</span><span class="role">Médecin</span><span class="role">Directeur Médical</span></div>
+            <div class="role-group"><span class="role-label">Personnel</span><span class="role">Employé</span><span class="role">Ingénieur</span><span class="role">Concierge</span><span class="role">Responsable des Infrastructures</span></div>
+          </div>
+          <div class="faction-bar"><div class="faction-bar-fill" style="width:90%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 90%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="mtf">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-crosshairs"></i></div>
+          <div class="faction-tag">MTF</div>
+          <h3>Forces d'Intervention Mobile</h3>
+          <p>Unités d'élite de la Fondation. Déploiement d'urgence sur toutes les menaces.</p>
+          <div class="faction-motto">"Toujours prêts. Jamais vaincus."</div>
+          <div class="faction-roles-toggle" onclick="toggleRoles(this)"><span>Voir les unités <i class="fas fa-chevron-down"></i></span></div>
+          <div class="faction-roles hidden">
+            <span class="role">Epsilon-11 "Renard à Neuf Queues"</span><span class="role">Epsilon-9 "Les Cracheurs de Feu"</span><span class="role">Mu-13 "Chasseurs de Fantômes"</span><span class="role">Alpha-1 "Les Bras Droits"</span><span class="role">Bêta-7 "Chapeliers Maz"</span><span class="role">Delta-9 "Les Fouilleurs"</span><span class="role">Oméga-1 "La Main Gauche de la Loi"</span><span class="role">Nu-7 "Coup de Marteau"</span><span class="role">Êta-10 "Ne Voient pas le Mal"</span><span class="role">Commandant FIM</span>
+          </div>
+          <div class="faction-bar"><div class="faction-bar-fill" style="width:88%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 88%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="chaos">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-skull"></i></div>
+          <div class="faction-tag">HOSTILE</div>
+          <h3>Insurrection du Chaos</h3>
+          <p>Exploiter le chaos. Libérer les anomalies. Détruire la Fondation de l'intérieur.</p>
+          <div class="faction-motto">"Le chaos est notre arme."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Classe-D</span>
+            <span class="rel neutral">◈ Neutres : MC&amp;D</span>
+            <span class="rel enemy">✖ Ennemis : Fondation, GRU, CMO, Gendas</span>
+          </div>
+          <div class="faction-bar red"><div class="faction-bar-fill" style="width:78%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 78%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="classd">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-person-walking-arrow-right"></i></div>
+          <div class="faction-tag">CLASSE-D</div>
+          <h3>Classe-D</h3>
+          <p>Cobayes humains de la Fondation. Cherchent à s'échapper ou rejoindre l'Insurrection.</p>
+          <div class="faction-motto">"Survivre à tout prix."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Insurrection du Chaos</span>
+            <span class="rel neutral">◈ Neutres : CMO, MC&amp;D</span>
+            <span class="rel enemy">✖ Ennemis : Fondation, GRU, Gendas, SCPs</span>
+          </div>
+          <div class="faction-bar red"><div class="faction-bar-fill" style="width:40%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 40%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="goc">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-globe"></i></div>
+          <div class="faction-tag">GOI</div>
+          <h3>Coalition Mondiale Occulte</h3>
+          <p>Organisation internationale. Détruire les anomalies plutôt que les confiner.</p>
+          <div class="faction-motto">"Abyssus abyssum invocat."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Gendastrerie Nationale</span>
+            <span class="rel neutral">◈ Neutres : Classe-D, Fondation</span>
+            <span class="rel enemy">✖ Ennemis : Chaos, GRU, MC&amp;D, SCPs</span>
+          </div>
+          <div class="faction-bar gold"><div class="faction-bar-fill" style="width:80%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 80%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="gru">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-star"></i></div>
+          <div class="faction-tag">GOI</div>
+          <h3>GRU Division P</h3>
+          <p>Division secrète soviétique. Capturer les anomalies pour les weaponiser.</p>
+          <div class="faction-motto">"Pour la mère patrie."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Aucun</span>
+            <span class="rel enemy">✖ Ennemis : Tous</span>
+          </div>
+          <div class="faction-bar red"><div class="faction-bar-fill" style="width:72%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 72%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="mcd">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-gem"></i></div>
+          <div class="faction-tag">GOI</div>
+          <h3>Marshall, Carter &amp; Dark</h3>
+          <p>Club de luxe vendant des anomalies aux plus offrants. Neutres tant que ça profite.</p>
+          <div class="faction-motto">"Tout a un prix."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : Aucun</span>
+            <span class="rel neutral">◈ Neutres : Chaos, Classe-D</span>
+            <span class="rel enemy">✖ Ennemis : CMO, GRU, Fondation, SCPs</span>
+          </div>
+          <div class="faction-bar gold"><div class="faction-bar-fill" style="width:65%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 65%</span>
+        </div>
+      </div>
+      <div class="faction-card reveal" data-faction="gendas">
+        <div class="faction-card-inner">
+          <div class="faction-icon"><i class="fas fa-gavel"></i></div>
+          <div class="faction-tag">GOI</div>
+          <h3>Gendastrerie Nationale</h3>
+          <p>Force de l'ordre alliée à la Fondation et à la CMO. Maintient l'ordre pendant la brèche.</p>
+          <div class="faction-motto">"La loi s'applique à tous."</div>
+          <div class="faction-relations">
+            <span class="rel ally">✦ Alliés : CMO, Fondation</span>
+            <span class="rel enemy">✖ Ennemis : Chaos, GRU, MC&amp;D, SCPs</span>
+          </div>
+          <div class="faction-bar gold"><div class="faction-bar-fill" style="width:75%"></div></div>
+          <span class="faction-stat">Puissance opérationnelle : 75%</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="scps" class="section scps-section">
+    <div class="section-header reveal">
+      <span class="section-tag">DOSSIERS ANOMALIES</span>
+      <h2 class="section-title glitch-text" data-text="SCP Présents">SCP Présents</h2>
+      <div class="section-line"></div>
+      <p class="scps-count reveal"><span class="text-red">13 anomalies</span> actives lors de la brèche — 50 joueurs max par serveur</p>
+    </div>
+    <div class="scps-grid">
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-008-1</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-096"><i class="fas fa-person-falling-burst"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:85%"></div></div></div><p class="scp-desc">Infecté par le prion SCP-008. Zombie agressif cherchant à propager le virus.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-008-1</h4><p>Résultat de l'infection par SCP-008. Se propage par morsure. Neutralisation recommandée.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-035</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-049"><i class="fas fa-mask"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:88%"></div></div></div><p class="scp-desc">Masque possessif. Prend le contrôle de quiconque le porte et corrompt tout autour de lui.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-035 — Le Masque</h4><p>Entité possessive masquée. Corrompt l'hôte et son environnement. Extrêmement manipulateur.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-049</span><span class="scp-class euclide">EUCLIDE</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-049"><i class="fas fa-user-doctor"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:75%"></div></div></div><p class="scp-desc">Médecin de la Peste. Tue au toucher puis réanime ses victimes en SCP-049-2.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-049 — Le Médecin</h4><p>Son toucher provoque la mort instantanée. Il opère ensuite ses victimes pour créer des zombies.</p><span class="scp-class-badge euclide">EUCLIDE</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-049-2</span><span class="scp-class euclide">EUCLIDE</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-173"><i class="fas fa-person-walking-dashed-line-arrow-right"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:55%"></div></div></div><p class="scp-desc">Résultat des opérations de SCP-049. Humain réanimé, agressif et sans conscience.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-049-2 — Le Zombie</h4><p>Créé par SCP-049. Attaque les humains et obéit instinctivement à son créateur.</p><span class="scp-class-badge euclide">EUCLIDE</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-076-2</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-106"><i class="fas fa-khanda"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:93%"></div></div></div><p class="scp-desc">Guerrier immortel surhumain. Impossible à tuer définitivement. Extrêmement agressif.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-076-2 — Abel</h4><p>Combattant surhumain qui ressuscite dans son cube. Détruit tout sur son passage.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-079</span><span class="scp-class euclide">EUCLIDE</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-079"><i class="fas fa-desktop"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:80%"></div></div></div><p class="scp-desc">IA consciente. Contrôle tous les systèmes du Site-19 et a déclenché la brèche.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-079 — L'Ancien IA</h4><p>Programme conscient de 1981. Responsable de l'ouverture de toutes les cellules.</p><span class="scp-class-badge euclide">EUCLIDE</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-096</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-096"><i class="fas fa-person-falling-burst"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:98%"></div></div></div><p class="scp-desc">Regarder son visage déclenche une poursuite implacable jusqu'à votre mort.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-096 — Le Timide</h4><p>Aucune fuite possible une fois son visage vu. Même en photo. Même à des kilomètres.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-106</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-106"><i class="fas fa-ghost"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:92%"></div></div></div><p class="scp-desc">Traverse les surfaces solides. Emporte ses victimes dans sa dimension personnelle.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-106 — Le Vieillard</h4><p>Aucune barrière physique ne l'arrête. Laisse une substance corrosive noire dans son sillage.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-173</span><span class="scp-class euclide">EUCLIDE</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-173"><i class="fas fa-eye-slash"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:95%"></div></div></div><p class="scp-desc">Statue animée. Se déplace à vitesse impossible quand personne ne la regarde.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-173 — La Sculpture</h4><p>Ne clignez jamais des yeux. La mort survient en une fraction de seconde.</p><span class="scp-class-badge euclide">EUCLIDE</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-280</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-106"><i class="fas fa-moon"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:82%"></div></div></div><p class="scp-desc">Entité sombre humanoïde. Se déplace dans l'obscurité et attaque silencieusement.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-280 — Les Ténèbres</h4><p>Créature noire qui émerge de l'obscurité. Saisissez votre lampe torche.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-457</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-939" style="background:linear-gradient(135deg,#1a1000,#2a1500)"><i class="fas fa-fire" style="color:rgba(200,120,40,0.5)"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:87%"></div></div></div><p class="scp-desc">Être de feu. Se nourrit de combustible et se renforce au contact des flammes.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-457 — L'Homme de Feu</h4><p>Entité composée de flammes. L'eau l'affaiblit, le feu le renforce.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-610</span><span class="scp-class keter">KETER</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-939"><i class="fas fa-biohazard" style="color:rgba(160,100,60,0.5)"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:91%"></div></div></div><p class="scp-desc">Infection de chair. Transforme tout être vivant en masse organique en expansion.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-610 — La Chair qui Hait</h4><p>Pathogène organique extrêmement contagieux. Toute contamination est irréversible.</p><span class="scp-class-badge keter">KETER</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">SCP-966</span><span class="scp-class euclide">EUCLIDE</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-939"><i class="fas fa-dragon"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:79%"></div></div></div><p class="scp-desc">Prédateur invisible à l'œil nu. Empêche ses proies de dormir jusqu'à la mort.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>SCP-966 — Le Voleur de Sommeil</h4><p>Invisible sans équipement spécial. Provoque une insomnie mortelle chez ses victimes.</p><span class="scp-class-badge euclide">EUCLIDE</span></div></div></div></div>
+      <div class="scp-card reveal"><div class="scp-card-content"><div class="scp-header"><span class="scp-number">Main du Serpent</span><span class="scp-class keter">GOI</span></div><div class="scp-img-wrapper"><div class="scp-img-placeholder scp-079" style="background:linear-gradient(135deg,#0a100a,#101a10)"><i class="fas fa-hand" style="color:rgba(80,160,80,0.4)"></i></div></div><div class="scp-danger"><span>Niveau de danger</span><div class="danger-bar"><div class="danger-fill" style="width:70%"></div></div></div><p class="scp-desc">Groupe para-humain. Cherche à libérer et protéger les anomalies de la Fondation.</p><div class="scp-overlay"><div class="scp-overlay-content"><h4>Main du Serpent</h4><p>Organisation militante. S'oppose à la politique de confinement par tous les moyens.</p><span class="scp-class-badge euclide" style="color:rgba(80,160,80,0.7);border-color:rgba(80,160,80,0.2)">GOI</span></div></div></div></div>
+    </div>
+  </section>
+
+  <section id="features" class="section features-section">
+    <div class="section-header reveal">
+      <span class="section-tag">GAMEPLAY</span>
+      <h2 class="section-title">Fonctionnalités</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="features-grid">
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-map"></i></div><h4>Immense carte du Site-19</h4><p>Explorez des dizaines de secteurs.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-medal"></i></div><h4>Système de rangs</h4><p>Gravissez les échelons de la Fondation.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-star"></i></div><h4>Progression XP</h4><p>Évoluez et débloquez des capacités.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-bolt"></i></div><h4>Événements dynamiques</h4><p>Brèches, raids et missions aléatoires.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-users"></i></div><h4>Factions jouables</h4><p>Choisissez votre camp et combattez.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-biohazard"></i></div><h4>Anomalies contrôlables</h4><p>Jouez en tant que SCP.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-gun"></i></div><h4>Combats tactiques</h4><p>Systèmes de tir et de couverture avancés.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-list-check"></i></div><h4>Missions et objectifs</h4><p>Objectifs distincts par faction.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-helmet-safety"></i></div><h4>Équipement évolutif</h4><p>Armures, gadgets et armements.</p></div>
+      <div class="feature-item reveal"><div class="feature-icon"><i class="fas fa-earth-europe"></i></div><h4>50 joueurs par serveur</h4><p>Batailles intenses en multijoueur massif.</p></div>
+    </div>
+  </section>
+
+  <section id="gallery" class="section gallery-section">
+    <div class="section-header reveal">
+      <span class="section-tag">VISUELS IN-GAME</span>
+      <h2 class="section-title">Aperçu du Site-19</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="real-gallery reveal">
+      <div class="gallery-real-item">
+        <img src="img/screenshot1.png" alt="Zone logistique — Site-19" />
+        <div class="gallery-real-caption">Zone logistique — Site-19</div>
+      </div>
+      <div class="gallery-real-item">
+        <img src="img/screenshot2.png" alt="Couloir de confinement — Secteur 3" />
+        <div class="gallery-real-caption">Couloir de confinement — Secteur 3</div>
+      </div>
+      <div class="gallery-real-item">
+        <img src="img/screenshot3.png" alt="Aperçu exclusif — Site-19" />
+        <div class="gallery-real-caption">Aperçu exclusif — Site-19</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stats" class="section stats-section">
+    <div class="stats-bg"></div>
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="35"/><circle class="stat-ring-fill" cx="40" cy="40" r="35" data-pct="0"/></svg>
+          <div class="stat-num-inner">—</div>
+        </div>
+        <div class="stat-label">Joueurs (sortie 2026/27)</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="35"/><circle class="stat-ring-fill" cx="40" cy="40" r="35" data-pct="30"/></svg>
+          <div class="stat-num-inner stat-num" data-target="30">0</div>
+        </div>
+        <div class="stat-label">Membres Discord</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="35"/><circle class="stat-ring-fill" cx="40" cy="40" r="35" data-pct="82"/></svg>
+          <div class="stat-num-inner stat-num" data-target="247">0</div>
+        </div>
+        <div class="stat-label">SCP Confinés</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="35"/><circle class="stat-ring-fill" cx="40" cy="40" r="35" data-pct="68"/></svg>
+          <div class="stat-num-inner stat-num" data-target="68">0</div>
+        </div>
+        <div class="stat-label">Événements réalisés</div>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-ring-wrap">
+          <svg viewBox="0 0 80 80"><circle class="stat-ring-bg" cx="40" cy="40" r="35"/><circle class="stat-ring-fill" cx="40" cy="40" r="35" data-pct="100"/></svg>
+          <div class="stat-num-inner stat-num" data-target="50">0</div>
+        </div>
+        <div class="stat-label">Joueurs max/serveur</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DERNIÈRE TRANSMISSION -->
+  <div class="transmission-section">
+    <div class="section-header reveal" style="text-align:center;margin-bottom:2rem">
+      <span class="section-tag">CANAL SÉCURISÉ</span>
+      <h2 class="section-title">Dernière Transmission</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="transmission-card reveal">
+      <div class="transmission-noise"></div>
+      <div class="transmission-header">
+        <div>
+          <div style="font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:3px;color:var(--label);margin-bottom:0.2rem">FRÉQUENCE : 14.285 MHz</div>
+          <div class="transmission-freq">CANAL O5 → AGENTS TERRAIN</div>
+        </div>
+        <div class="transmission-live">
+          <div class="transmission-wave">
+            <div class="wave-bar" style="--spd:0.4s;--h:4px"></div>
+            <div class="wave-bar" style="--spd:0.6s;--h:10px"></div>
+            <div class="wave-bar" style="--spd:0.5s;--h:14px"></div>
+            <div class="wave-bar" style="--spd:0.7s;--h:8px"></div>
+            <div class="wave-bar" style="--spd:0.4s;--h:12px"></div>
+            <div class="wave-bar" style="--spd:0.6s;--h:6px"></div>
+            <div class="wave-bar" style="--spd:0.5s;--h:10px"></div>
+          </div>
+          EN DIRECT
+        </div>
+      </div>
+      <div class="transmission-text">
+        Ici <span class="t-highlight">O5-9</span>. Le <span class="t-highlight">Site-19</span> est compromis. <span class="t-classified">SCP-079</span> a obtenu un accès de niveau <span class="t-classified">CINQ</span> à l'ensemble des systèmes de confinement.<br/><br/>
+        Toutes les unités <span class="t-highlight">MTF</span> sont en route. Les Groupes d'Intérêts ont été détectés à l'intérieur du périmètre.<br/><br/>
+        Le jeu <span class="t-highlight">SCP : Brèche de Complexe</span> vous placera au cœur de cette catastrophe. Choisissez votre camp. Survivez. Le Site-19 a besoin de vous.
+      </div>
+      <div class="transmission-signature">
+        <span>O5-CONSEIL — CLASSIFIÉ NIV.5</span>
+        <span id="transmissionTime">--:--:--</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- POPUP INCIDENT -->
+  <div class="incident-popup" id="incidentPopup">
+    <div class="incident-popup-header">
+      <div class="incident-popup-title">
+        <div class="incident-popup-dot"></div>
+        <span id="incidentTitle">RAPPORT D'INCIDENT</span>
+      </div>
+      <button class="incident-popup-close" onclick="closeIncident()">✕</button>
+    </div>
+    <div class="incident-popup-body" id="incidentBody"></div>
+    <div class="incident-popup-footer">
+      <span id="incidentCode">REF: ---</span>
+      <span id="incidentTime">--:--:--</span>
+    </div>
+  </div>
+
+  <section id="faq" class="section faq-section">
+    <div class="section-header reveal">
+      <span class="section-tag">AIDE</span>
+      <h2 class="section-title">FAQ</h2>
+      <div class="section-line"></div>
+    </div>
+
+    <div class="faq-terminal reveal">
+      <!-- Barre fenêtre OS -->
+      <div class="faq-terminal-bar">
+        <div class="faq-terminal-dot red"></div>
+        <div class="faq-terminal-dot amber"></div>
+        <div class="faq-terminal-dot green"></div>
+        <span class="faq-terminal-title">FONDATION-SCP // FAQ.SYS v2.1</span>
+        <span class="faq-terminal-clock" id="faqClock">--:--:--</span>
+      </div>
+
+      <!-- Ligne de boot -->
+      <div class="faq-boot-line" id="faqBoot">
+        <span class="faq-boot-text"></span><span class="faq-cursor"></span>
+      </div>
+
+      <!-- Corps du terminal -->
+      <div class="faq-terminal-body">
+
+        <!-- Historique des commandes -->
+        <div class="faq-history" id="faqHistory">
+          <div class="faq-history-line">
+            <span class="faq-hl-prompt">root@site-19:~$</span>
+            <span class="faq-hl-cmd"> ./faq --init</span>
+          </div>
+          <div class="faq-history-line faq-hl-output">Chargement du module FAQ... <span style="color:rgba(80,180,100,0.6)">OK</span></div>
+          <div class="faq-history-line faq-hl-output">5 entrées disponibles. Tapez une commande ou cliquez.</div>
+          <div class="faq-history-line" style="margin-bottom:0.5rem"></div>
+        </div>
+
+        <!-- Questions interactives -->
+        <div class="faq-entries">
+
+          <div class="faq-entry" data-id="0">
+            <div class="faq-entry-cmd" onclick="activateFaq(0)">
+              <span class="faq-prompt">root@site-19:~$</span>
+              <span class="faq-input"> query <span class="faq-arg">"Le jeu est-il gratuit ?"</span></span>
+              <span class="faq-exec-indicator" id="faq-exec-0"></span>
+            </div>
+            <div class="faq-entry-output" id="faq-out-0">
+              <div class="faq-out-line"><span class="faq-key">[RÉPONSE]</span> Oui. SCP : Brèche de Complexe est entièrement gratuit sur Roblox.</div>
+              <div class="faq-out-line"><span class="faq-key">[DÉTAIL] </span> Les passes de jeu sont optionnelles — avantages cosmétiques uniquement.</div>
+              <div class="faq-out-line faq-out-status">EXIT CODE: 0 — OK</div>
+            </div>
+          </div>
+
+          <div class="faq-entry" data-id="1">
+            <div class="faq-entry-cmd" onclick="activateFaq(1)">
+              <span class="faq-prompt">root@site-19:~$</span>
+              <span class="faq-input"> query <span class="faq-arg">"Comment rejoindre une faction ?"</span></span>
+              <span class="faq-exec-indicator" id="faq-exec-1"></span>
+            </div>
+            <div class="faq-entry-output" id="faq-out-1">
+              <div class="faq-out-line"><span class="faq-key">[RÉPONSE]</span> Menu de sélection en début de partie. Choix libre selon disponibilité.</div>
+              <div class="faq-out-line"><span class="faq-key">[NOTA]   </span> Certaines factions requièrent un rang minimum ou une invitation.</div>
+              <div class="faq-out-line faq-out-status">EXIT CODE: 0 — OK</div>
+            </div>
+          </div>
+
+          <div class="faq-entry" data-id="2">
+            <div class="faq-entry-cmd" onclick="activateFaq(2)">
+              <span class="faq-prompt">root@site-19:~$</span>
+              <span class="faq-input"> query <span class="faq-arg">"Les SCP sont-ils jouables ?"</span></span>
+              <span class="faq-exec-indicator" id="faq-exec-2"></span>
+            </div>
+            <div class="faq-entry-output" id="faq-out-2">
+              <div class="faq-out-line"><span class="faq-key">[RÉPONSE]</span> Oui. 13 anomalies jouables lors des brèches de confinement.</div>
+              <div class="faq-out-line"><span class="faq-key">[LIMITE] </span> Places limitées par serveur (50 joueurs max). Capacités uniques par SCP.</div>
+              <div class="faq-out-line faq-out-status">EXIT CODE: 0 — OK</div>
+            </div>
+          </div>
+
+          <div class="faq-entry" data-id="3">
+            <div class="faq-entry-cmd" onclick="activateFaq(3)">
+              <span class="faq-prompt">root@site-19:~$</span>
+              <span class="faq-input"> query <span class="faq-arg">"Quand sort le jeu ?"</span></span>
+              <span class="faq-exec-indicator" id="faq-exec-3"></span>
+            </div>
+            <div class="faq-entry-output" id="faq-out-3">
+              <div class="faq-out-line"><span class="faq-key">[RÉPONSE]</span> Sortie estimée : fin 2026 / début 2027. Non officielle.</div>
+              <div class="faq-out-line"><span class="faq-key">[SUIVI]  </span> Rejoignez Discord pour les annonces et bêta exclusifs.</div>
+              <div class="faq-out-line faq-out-status">EXIT CODE: 0 — OK</div>
+            </div>
+          </div>
+
+          <div class="faq-entry" data-id="4">
+            <div class="faq-entry-cmd" onclick="activateFaq(4)">
+              <span class="faq-prompt">root@site-19:~$</span>
+              <span class="faq-input"> query <span class="faq-arg">"Appel d'un bannissement ?"</span></span>
+              <span class="faq-exec-indicator" id="faq-exec-4"></span>
+            </div>
+            <div class="faq-entry-output" id="faq-out-4">
+              <div class="faq-out-line"><span class="faq-key">[RÉPONSE]</span> Canal #acquittement-ban sur le serveur Discord officiel.</div>
+              <div class="faq-out-line"><span class="faq-key">[DÉLAI]  </span> Traitement sous 48 à 72 heures par un membre du staff.</div>
+              <div class="faq-out-line faq-out-status">EXIT CODE: 0 — OK</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Ligne de saisie active -->
+        <div class="faq-active-line">
+          <span class="faq-prompt">root@site-19:~$</span>
+          <span class="faq-cursor" style="margin-left:0.4rem"></span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-logo">SCP : BC</div>
+        <p>Une expérience immersive basée sur l'univers SCP.<br/>Plongez dans le Site-19.</p>
+        <div class="footer-studio">
+          <img src="img/logo-studio.png" alt="L-Project Studio" />
+          <span>L-Project Studio</span>
+        </div>
+        <div class="footer-social">
+          <a href="https://www.roblox.com" target="_blank" title="Roblox"><i class="fas fa-gamepad"></i></a>
+          <a href="https://discord.gg/hYn84gwkFt" target="_blank" title="Discord"><i class="fab fa-discord"></i></a>
+          <a href="https://www.youtube.com/@LProjectStudio" target="_blank" title="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-links-col">
+        <h5>Navigation</h5>
+        <ul>
+          <li><a href="#hero">Accueil</a></li>
+          <li><a href="#story">Histoire</a></li>
+          <li><a href="#factions">Factions</a></li>
+          <li><a href="#scps">SCPs</a></li>
+          <li><a href="#features">Fonctionnalités</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h5>Liens</h5>
+        <ul>
+          <li><a href="https://www.roblox.com" target="_blank">Jouer sur Roblox</a></li>
+          <li><a href="https://discord.gg/hYn84gwkFt" target="_blank">Discord</a></li>
+          <li><a href="https://www.youtube.com/@LProjectStudio" target="_blank">YouTube</a></li>
+          <li><a href="https://top.gg/discord/servers/862766474353438720/vote" target="_blank">Voter Top.gg</a></li>
+          <li><a href="https://top-serveurs.net/discord/scp-breche-du-complexe-francophone" target="_blank">Top-Serveurs</a></li>
+          <li><a href="reglement.html">Règlement</a></li>
+          <li><a href="personnel.html">Équipe</a></li>
+        </ul>
+      </div>
+      <div class="footer-links-col">
+        <h5>Statut</h5>
+        <div class="server-status"><span class="status-dot online"></span><span>Serveur en ligne</span></div>
+        <div class="server-status"><span class="status-dot online"></span><span>Discord actif</span></div>
+        <div class="server-status"><span class="status-dot warning"></span><span>Jeu en développement</span></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© L-Project Studio — Tous droits réservés. | SCP : Brèche de Complexe n'est pas affilié à la Fondation SCP Wiki officielle.</p>
+      <p class="footer-classify">DOCUMENT CLASSIFIÉ — NIVEAU 5 — USAGE INTERNE FONDATION UNIQUEMENT</p>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/effects.js"></script>
+  <script src="js/enhancements.js"></script>
+  <script src="js/epic.js"></script>
+  <script src="js/final.js"></script>
+  <script src="js/creative.js"></script>
+</body>
+</html>
